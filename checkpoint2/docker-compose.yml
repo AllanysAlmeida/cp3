@@ -1,0 +1,17 @@
+services:
+  # Serviço para executar o pipeline da API
+  pipeline-api:
+    build: .
+    image: pipeline-unificada
+    command: ["api"]
+    # Ambos os serviços usam o mesmo arquivo .env central
+    env_file:
+      - ./.env
+
+  # Serviço para executar o pipeline do Banco de Dados
+  pipeline-db:
+    build: .
+    image: pipeline-unificada
+    command: ["db"]
+    env_file:
+      - ./.env

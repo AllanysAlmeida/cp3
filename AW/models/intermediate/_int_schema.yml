@@ -1,0 +1,176 @@
+version: 2
+
+models:
+  - name: int_products
+    description: "Dimensão de produtos enriquecida com hierarquia de categorias."
+    columns:
+      - name: product_id
+        description: "PK: Chave primária do produto."
+        tests:
+          - unique
+          - not_null
+      - name: product_subcategory_id
+        description: "FK para a subcategoria do produto."
+      - name: product_category_id
+        description: "FK para a categoria do produto."
+      - name: subcategory_name
+        description: "Nome da subcategoria (Unknown Subcategory para valores nulos)."
+      - name: category_name
+        description: "Nome da categoria (Unknown Category para valores nulos)."
+      - name: standard_cost
+        description: "Custo padrão do produto."
+      - name: list_price
+        description: "Preço de lista do produto."
+
+  - name: int_sales_persons
+    description: "Dimensão de vendedores com métricas de performance."
+    columns:
+      - name: sales_person_id
+        description: "PK: Chave primária do vendedor (business_entity_id)."
+        tests:
+          - unique
+          - not_null
+      - name: commission_percentage
+        description: "Percentual de comissão do vendedor (0.0 para valores nulos)."
+      - name: sales_quota
+        description: "Cota de vendas do vendedor (0.0 para valores nulos)."
+
+  - name: int_sales_reasons
+    description: "Dimensão de motivos de venda com classificação padronizada."
+    columns:
+      - name: sales_reason_id
+        description: "PK: Chave primária do motivo da venda."
+        tests:
+          - unique
+          - not_null
+      - name: reason_name
+        description: "Nome do motivo da venda."
+      - name: reason_type
+        description: "Tipo do motivo da venda (Other para valores nulos)."
+
+  - name: int_special_offers
+    description: "Dimensão de ofertas especiais com padronização de descontos."
+    columns:
+      - name: special_offer_id
+        description: "PK: Chave primária da oferta especial."
+        tests:
+          - unique
+          - not_null
+      - name: discount_percentage
+        description: "Percentual de desconto da oferta (0.0 para valores nulos)."
+      - name: offer_type
+        description: "Tipo da oferta especial (No Discount para valores nulos)."
+
+  - name: int_territories
+    description: "Dimensão de territórios de vendas com informações geográficas."
+    columns:
+      - name: territory_id
+        description: "PK: Chave primária do território."
+        tests:
+          - unique
+          - not_null
+      - name: name
+        description: "Nome do território."
+      - name: country_region_code
+        description: "Código do país/região."
+      - name: country_region_name
+        description: "Nome do país/região (Unknown Region para valores nulos)."
+
+  - name: int_date
+    description: "Dimensão de datas para análise temporal."
+    columns:
+      - name: order_date_id
+        description: "PK: Surrogate key da data no formato YYYYMMDD."
+        tests:
+          - unique
+          - not_null
+      - name: date
+        description: "Data completa."
+        tests:
+          - not_null
+      - name: year
+        description: "Ano da data."
+        tests:
+          - not_null
+      - name: quarter
+        description: "Trimestre da data."
+        tests:
+          - not_null
+      - name: month
+        description: "Mês da data (1-12)."
+        tests:
+          - not_null
+      - name: day
+        description: "Dia da data (1-31)."
+        tests:
+          - not_null
+
+  - name: int_sales
+    description: "Fato transacional de vendas integrado. Granularidade: um item de pedido por linha."
+    columns:
+      - name: sales_order_id
+        description: "PK parte 1: Identificador do pedido de venda."
+        tests:
+          - not_null
+      - name: sales_order_detail_id
+        description: "PK parte 2: Chave primária única para cada item de pedido."
+        tests:
+          - not_null
+      - name: product_id
+        description: "FK: Chave para a dimensão de produtos."
+        tests:
+          - not_null
+      - name: customer_id
+        description: "FK: Chave para a dimensão de clientes."
+        tests:
+          - not_null
+      - name: sales_person_id
+        description: "FK: Chave para a dimensão de vendedores (pode ser nulo)."
+      - name: territory_id
+        description: "FK: Chave para a dimensão de territórios (pode ser nulo)."
+      - name: order_date_id
+        description: "FK: Surrogate key para a dimensão de data (YYYYMMDD)."
+        tests:
+          - not_null
+      - name: special_offer_id
+        description: "FK: Chave para a dimensão de ofertas especiais."
+        tests:
+          - not_null
+      - name: sales_reason_id
+        description: "FK: Chave para a dimensão de motivos da venda (padrão 1 para nulos)."
+        tests:
+          - not_null
+      - name: total_due
+        description: "Valor total do pedido."
+      - name: line_total
+        description: "Valor total da linha do item."
+      - name: order_quantity
+        description: "Quantidade pedida."
+      - name: unit_price
+        description: "Preço unitário."
+
+  - name: int_purchases
+    description: "Fato transacional de compras integrado. Granularidade: um item de ordem de compra por linha."
+    columns:
+      - name: purchase_order_id
+        description: "PK parte 1: Identificador da ordem de compra."
+        tests:
+          - not_null
+      - name: purchase_order_detail_id
+        description: "PK parte 2: Chave primária única para cada item de compra."
+        tests:
+          - not_null
+      - name: product_id
+        description: "FK: Chave para a dimensão de produtos."
+        tests:
+          - not_null
+      - name: purchase_date_id
+        description: "FK: Surrogate key para a dimensão de data (YYYYMMDD)."
+        tests:
+          - not_null
+      - name: line_total
+        description: "Valor total da linha do item."
+      - name: unit_price
+        description: "Preço unitário."
+      - name: order_quantity
+        description: "Quantidade pedida."

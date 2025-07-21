@@ -1,0 +1,63 @@
+[sqlfluff]
+# Configuração SQLFluff para projeto dbt
+dialect = databricks
+templater = jinja
+exclude_rules = RF04  # Permite usar palavras reservadas como nomes de colunas
+
+[sqlfluff:indentation]
+# Configurações de indentação
+tab_space_size = 4
+indent_unit = space
+
+[sqlfluff:layout:type:comma]
+# Vírgulas no final da linha
+spacing_before = touch
+line_position = trailing
+
+[sqlfluff:layout:type:binary_operator]
+# Operadores binários
+spacing_within = touch
+line_position = leading
+
+[sqlfluff:rules:capitalisation.keywords]
+# Palavras-chave em maiúsculo
+capitalisation_policy = upper
+
+[sqlfluff:rules:capitalisation.identifiers]
+# Identificadores em minúsculo
+capitalisation_policy = lower
+
+[sqlfluff:rules:capitalisation.functions]
+# Funções em maiúsculo
+capitalisation_policy = upper
+
+[sqlfluff:rules:capitalisation.literals]
+# Literais como são
+capitalisation_policy = consistent
+
+[sqlfluff:rules:aliasing.table]
+# Alias obrigatório para tabelas
+aliasing = explicit
+
+[sqlfluff:rules:aliasing.column]
+# Alias para colunas quando necessário
+aliasing = explicit
+
+[sqlfluff:rules:ambiguous.column_references]
+# Referências de colunas devem ser não ambíguas
+group_by_and_order_by_style = consistent
+
+[sqlfluff:rules:convention.select_trailing_comma]
+# Vírgula trailing em SELECT
+select_clause_trailing_comma = forbid
+
+[sqlfluff:rules:structure.subquery]
+# Subqueries devem usar parênteses
+forbid_subquery_in = both
+
+[sqlfluff:templater:dbt]
+# Configurações do templater dbt
+project_dir = .
+profiles_dir = ~/.dbt
+profile = default
+target = dev

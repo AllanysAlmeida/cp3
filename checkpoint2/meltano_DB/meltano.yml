@@ -1,0 +1,26 @@
+version: 1
+default_environment: dev
+project_id: 97e9a611-4744-4513-81ae-40984f137f08
+environments:
+- name: dev
+- name: staging
+- name: prod
+plugins:
+  extractors:
+  - name: tap-mssql
+    variant: buzzcutnorman
+    pip_url: git+https://github.com/BuzzCutNorman/tap-mssql.git
+    config:
+      host: ${TAP_MSSQL_HOST}
+      user: ${TAP_MSSQL_USER}
+      password: ${TAP_MSSQL_PASSWORD}
+      port: ${TAP_MSSQL_PORT}
+      database: ${TAP_MSSQL_DATABASE}
+    select:
+      - "Person-CountryRegion.*"
+  loaders:
+  - name: target-parquet
+    variant: automattic
+    pip_url: git+https://github.com/Automattic/target-parquet.git
+    compression: gzip
+    path_format: '{stream_name}/{stream_name}_{timestamp}.parquet'
