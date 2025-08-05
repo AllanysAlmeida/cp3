@@ -17,7 +17,16 @@ plugins:
       port: ${TAP_MSSQL_PORT}
       database: ${TAP_MSSQL_DATABASE}
     select:
+      - "Sales-SalesReason.*"
+      - "Sales-SalesOrderHeaderSalesReason.*"
+      - "Sales-CreditCard.*"
+      - "Sales-SalesTerritory.*"
+      - "Production-Product.*"
+      - "Person-Address.*"
+      - "Person-StateProvince.*"
       - "Person-CountryRegion.*"
+      - "Sales-Customer.*"
+      - "Person-Person.*"
   loaders:
   - name: target-parquet
     variant: automattic

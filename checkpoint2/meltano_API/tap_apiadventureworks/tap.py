@@ -16,8 +16,8 @@ class TapAPIAdventureWorks(Tap):
 
     def discover_streams(self) -> list[streams.APIAdventureWorksStream]:
         return [
-            streams.PurchaseOrderDetailStream(self),
-            streams.PurchaseOrderHeaderStream(self),
+            #streams.PurchaseOrderDetailStream(self),
+            #streams.PurchaseOrderHeaderStream(self),
             streams.SalesOrderHeaderStream(self),
             streams.SalesOrderDetailStream(self)
         ]
