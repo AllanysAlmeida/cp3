@@ -14,20 +14,23 @@ deduplicated_source AS (
 
 renamed AS (
     SELECT
-        coalesce(cast(salesorderid AS integer), 0) AS sales_order_id,
-        coalesce(cast(customerid AS integer), 0) AS customer_id,
-        coalesce(cast(salespersonid AS integer), 0) AS sales_person_id,
-        coalesce(cast(territoryid AS integer), 0) AS territory_id,
-        coalesce(cast(orderdate AS date), date('1900-01-01')) AS order_date,
-        coalesce(cast(totaldue AS numeric(19, 4)), 0) AS total_due
+        cast(salesorderid AS integer) AS sales_order_id,
+        cast(orderdate AS date) AS order_date,
+        cast(totaldue AS numeric(19, 4)) AS total_due,
+        cast(customerid AS integer) AS customer_id,
+        cast(territoryid AS integer) AS territory_id,
+        cast(creditcardid AS integer) AS credit_card_id,
+        DATEPART(QUARTER, orderdate) AS order_quarter,
+        DATEPART(YEAR, orderdate) AS order_year,
+        CASE WHEN onlineorderflag = 1 THEN TRUE ELSE FALSE END AS online_order_flag
     FROM deduplicated_source
     WHERE
         row_num = 1
-        AND coalesce(salesorderid, 0) > 0
-        AND coalesce(customerid, 0) > 0
-        AND coalesce(orderdate, date('1900-01-01')) >= date('2005-01-01')
-        AND coalesce(orderdate, date('1900-01-01')) <= current_date()
-        AND coalesce(totaldue, 0) >= 0
+        AND salesorderid IS NOT NULL
+        AND customerid IS NOT NULL
+        AND orderdate >= date('2005-01-01')
+        AND orderdate <= current_date()
+        AND totaldue >= 0
 )
 
 SELECT * FROM renamed

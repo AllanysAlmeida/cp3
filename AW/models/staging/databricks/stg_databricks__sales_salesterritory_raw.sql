@@ -12,16 +12,19 @@ deduplicated_source AS (
 
 renamed AS (
     SELECT
-        coalesce(cast(territoryid AS integer), 0) AS territory_id,
-        coalesce(trim(name), 'Unknown') AS territory_name,
-        coalesce(trim(upper(countryregioncode)), 'Unknown') AS country_region_code
+        cast(territoryid AS integer) AS territory_id,
+        trim(name) AS territory_name,
+        trim(upper(countryregioncode)) AS country_region_code,
+        trim(upper(group)) AS territory_group
     FROM deduplicated_source
     WHERE
         row_num = 1
-        AND coalesce(territoryid, 0) > 0
-        AND coalesce(trim(name), 'Unknown') != ''
-        AND coalesce(trim(countryregioncode), 'Unknown') != ''
-        AND length(coalesce(trim(countryregioncode), 'Unknown')) <= 3
+        AND territoryid IS NOT NULL
+        AND trim(name) IS NOT NULL
+        AND trim(name) != ''
+        AND trim(countryregioncode) IS NOT NULL
+        AND trim(countryregioncode) != ''
+        AND length(trim(countryregioncode)) <= 3
 )
 
 SELECT * FROM renamed

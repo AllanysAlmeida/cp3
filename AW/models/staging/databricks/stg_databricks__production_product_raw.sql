@@ -12,16 +12,16 @@ deduplicated_source AS (
 
 renamed AS (
     SELECT
-        coalesce(cast(productid AS integer), 0) AS product_id,
-        coalesce(cast(productsubcategoryid AS integer), 0) AS product_subcategory_id,
-        coalesce(cast(standardcost AS numeric(19, 4)), 0) AS standard_cost,
+        cast(productid AS integer) AS product_id,
+        trim(name) AS product_name,
+        cast(productsubcategoryid AS integer) AS product_subcategory_id,
         coalesce(cast(listprice AS numeric(19, 4)), 0) AS list_price
     FROM deduplicated_source
     WHERE
         row_num = 1
-        AND coalesce(productid, 0) > 0
-        AND coalesce(standardcost, 0) >= 0
-        AND coalesce(listprice, 0) >= 0
+        AND productid IS NOT NULL
+        AND trim(name) IS NOT NULL
+        AND trim(name) != ''
 )
 
 SELECT * FROM renamed

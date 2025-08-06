@@ -2,23 +2,25 @@ WITH source AS (
     SELECT * FROM {{ source('databricks_source', 'person_person') }}
 ),
 
-filtered AS (
-    SELECT coalesce(cast(businessentityid AS integer), 0) AS business_entity_id
-    FROM source
-    WHERE true
-),
-
-deduped AS (
+deduplicated_source AS (
     SELECT
-        business_entity_id,
-        row_number() OVER (PARTITION BY business_entity_id ORDER BY business_entity_id) AS rn
-    FROM filtered
+        *,
+        row_number() OVER (PARTITION BY businessentityid ORDER BY modifieddate DESC) AS row_num
+    FROM source
+    WHERE businessentityid IS NOT null
 ),
 
-final AS (
-    SELECT business_entity_id
-    FROM deduped
-    WHERE rn = 1
+renamed AS (
+    SELECT
+        cast(businessentityid AS integer) AS business_entity_id,
+        trim(firstname) AS first_name,
+        trim(lastname) AS last_name,
+        trim(persontype) AS person_type,
+        CONCAT(trim(firstname), ' ', trim(lastname)) AS full_name
+    FROM deduplicated_source
+    WHERE
+        row_num = 1
+        AND businessentityid IS NOT NULL
 )
 
-SELECT * FROM final
+SELECT * FROM renamed

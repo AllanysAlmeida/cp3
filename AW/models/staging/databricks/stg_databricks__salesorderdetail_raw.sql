@@ -12,22 +12,20 @@ deduplicated_source AS (
 
 renamed AS (
     SELECT
-        coalesce(cast(salesorderdetailid AS integer), 0) AS sales_order_detail_id,
-        coalesce(cast(salesorderid AS integer), 0) AS sales_order_id,
-        coalesce(cast(productid AS integer), 0) AS product_id,
-        coalesce(cast(specialofferid AS integer), 0) AS special_offer_id,
-        coalesce(cast(orderqty AS integer), 0) AS order_quantity,
-        coalesce(cast(unitprice AS numeric(19, 4)), 0) AS unit_price,
-        coalesce(cast(linetotal AS numeric(19, 4)), 0) AS line_total
+        cast(salesorderdetailid AS integer) AS sales_order_detail_id,
+        cast(salesorderid AS integer) AS sales_order_id,
+        cast(productid AS integer) AS product_id,
+        cast(orderqty AS integer) AS order_qty,
+        cast(linetotal AS numeric(19, 4)) AS line_total,
+        cast(unitprice AS numeric(19, 4)) AS unit_price
     FROM deduplicated_source
     WHERE
         row_num = 1
-        AND coalesce(salesorderdetailid, 0) > 0
-        AND coalesce(salesorderid, 0) > 0
-        AND coalesce(productid, 0) > 0
-        AND coalesce(orderqty, 0) > 0
-        AND coalesce(unitprice, 0) >= 0
-        AND coalesce(linetotal, 0) >= 0
+        AND salesorderdetailid IS NOT NULL
+        AND salesorderid IS NOT NULL
+        AND productid IS NOT NULL
+        AND orderqty > 0
+        AND linetotal >= 0
 )
 
 SELECT * FROM renamed

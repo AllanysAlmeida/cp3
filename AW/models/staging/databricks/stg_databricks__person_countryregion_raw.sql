@@ -12,13 +12,15 @@ deduplicated_source AS (
 
 renamed AS (
     SELECT
-        coalesce(trim(upper(countryregioncode)), 'Unknown') AS country_region_code,
-        coalesce(trim(name), 'Unknown') AS country_region_name
+        trim(upper(countryregioncode)) AS country_region_code,
+        initcap(trim(name)) AS country_region_name
     FROM deduplicated_source
     WHERE
         row_num = 1
-        AND coalesce(trim(countryregioncode), 'Unknown') != ''
-        AND coalesce(trim(name), 'Unknown') != ''
+        AND trim(countryregioncode) IS NOT NULL
+        AND trim(countryregioncode) != ''
+        AND trim(name) IS NOT NULL
+        AND trim(name) != ''
 )
 
 SELECT * FROM renamed

@@ -12,14 +12,15 @@ deduplicated_source AS (
 
 renamed AS (
     SELECT
-        coalesce(cast(salesreasonid AS integer), 0) AS sales_reason_id,
-        coalesce(trim(name), 'Unknown') AS sales_reason_name,
-        coalesce(trim(upper(reasontype)), 'Unknown') AS reason_type
+        cast(salesreasonid AS integer) AS sales_reason_id,
+        trim(name) AS reason_name,
+        trim(upper(reasontype)) AS reason_type
     FROM deduplicated_source
     WHERE
         row_num = 1
-        AND coalesce(salesreasonid, 0) > 0
-        AND coalesce(trim(name), 'Unknown') != ''
+        AND salesreasonid IS NOT NULL
+        AND trim(name) IS NOT NULL
+        AND trim(name) != ''
 )
 
 SELECT * FROM renamed

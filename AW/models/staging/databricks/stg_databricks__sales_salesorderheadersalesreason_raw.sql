@@ -12,13 +12,13 @@ deduplicated_source AS (
 
 renamed AS (
     SELECT
-        coalesce(cast(salesorderid AS integer), 0) AS sales_order_id,
-        coalesce(cast(salesreasonid AS integer), 0) AS sales_reason_id
+        cast(salesorderid AS integer) AS sales_order_id,
+        cast(salesreasonid AS integer) AS sales_reason_id
     FROM deduplicated_source
     WHERE
         row_num = 1
-        AND coalesce(salesorderid, 0) > 0
-        AND coalesce(salesreasonid, 0) > 0
+        AND salesorderid IS NOT NULL
+        AND salesreasonid IS NOT NULL
 )
 
 SELECT * FROM renamed
